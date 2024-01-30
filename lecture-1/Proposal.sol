@@ -9,6 +9,9 @@ pragma solidity ^0.8.19;
 contract Task{
     address immutable owner;
     address[] private voters;  
+    uint256 private counter;
+
+
     
     constructor(){
         owner = msg.sender;
@@ -19,32 +22,26 @@ contract Task{
         _;
     }
 
-    struct Proposal{
-        uint256 approveCounter; // aye vote number
-        uint256 rejectCounter;  // nay vote number
-        uint256 passCounter;    // swing-vote number
-        uint256 voteLimit;      // limits the possible number of votes can be casted
-        bool isVotingContinuing;// if voteLimit not exceeded it returns true,otherwise false, meaning voting is over
-        bool votingStatus;      // will return wheter the current proposal is failing or passing(success)
+    struct Proposal {
+        string title; // title of the proposal --> HOMEWORK 2##
+        string description; // Description of the proposal
+        uint256 approve; // Number of approve votes
+        uint256 reject; // Number of reject votes
+        uint256 pass; // Number of pass votes
+        uint256 total_vote_to_end; // When the total votes in the proposal reaches this limit, proposal ends
+        bool current_state; // This shows the current state of the proposal, meaning whether if passes of fails
+        bool is_active; // This shows if others can vote to our contract
     }
 
+    mapping(uint256 => Proposal) proposal_history; // Recordings of previous proposals
 
-
-    function isAlreadyVoted() private view returns(bool){
-        for (uint i = 0; i<voters.length; i++)
-            if ( voters[i] == msg.sender ) return true;
-        return false;
-    }
-
-    
-
-    function createProposal(uint256 voteLimit,string memory description)external onlyOwner(){
-
-    }
-
-
-    function voteApproval() external{
-
+    function createProposal(
+        string calldata _title,
+        string calldata _description,
+        uint256 _total_vote_to_end
+    ) external onlyOwner {
+        counter++;
+        proposal_history[counter] = Proposal(_title,_description,0,0,0,_total_vote_to_end,false,true);
     }
 
 
