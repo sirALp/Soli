@@ -131,4 +131,25 @@ contract Task{
             return false;// meaning proposal is failing
     }
 
+    /* *************** QUERY FUNCTIONS **************** */
+
+    // returns wheter the input address's user has voted or not
+    function isVoted(address _address) public view active returns(bool){
+        for (uint256 i = 0 ; i< voters.length ; i++){
+            if (voters[i] == _address)
+                return true;
+        }
+        return false;
+    }
+
+    // getter function for our current proposal
+    function getCurrentProposal() external view returns(Proposal memory){
+        return proposal_history[counter];
+    }
+
+    // getter function for a spesific proposal , takes a number as an input
+    function getProposal(uint256 num) external view returns(Proposal memory){
+        return proposal_history[num];
+    }
+
 }
