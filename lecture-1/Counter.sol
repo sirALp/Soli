@@ -2,8 +2,8 @@
 pragma solidity ^0.8.19;
 
 /*
-    This the homework file #1(counter) for the Solidity Bootcamp held by RiseIn , 
-    Written by Alperen TEKİN.
+    This the homework file #1(counter example) for the Solidity Bootcamp held by RiseIn , 
+    Written by Alperen TEKİN. 
 */
 
 contract Task{
