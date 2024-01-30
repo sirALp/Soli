@@ -15,10 +15,23 @@ contract Task{
     
     constructor(){
         owner = msg.sender;
+        voters.push(msg.sender);
     }
 
     modifier onlyOwner{
         require(msg.sender == owner, "You don't have permissons!");
+        _;
+    }
+
+    modifier canVote{
+        require(!didVote(msg.sender),"You have already voted!");
+        // if msg.sender is already voted (didVote returns true) than we won't allow them to revote.
+        _;
+    }
+
+    modifier active{
+        require(proposal_history[counter].is_active , "Proposal is not active, You cannot vote!"); 
+        // if proposal is still active then we'd go inner if statements otherwise won't even continue
         _;
     }
 
@@ -48,18 +61,26 @@ contract Task{
         owner = new_Owner;
     }
 
+    function didVote(address _address) internal view returns(bool){
+        // looping through voters array which holds all the voters until that moment.
+        for (uint256 i = 0 ; i< voters.length ;i++){
+            if ( _address == voters[i]) return true;
+        }
+        return false;
+    }
 
-    function vote(uint8 choice) external {
-        require(proposal_history[counter].is_active , "Proposal is not active, You cannot vote!"); 
-        // if proposal is still active then we'd go inner if statements otherwise won't even continue
+    function vote(uint8 choice) external active canVote{
         if (choice == 0 ){
             proposal_history[counter].pass++;
+            voters.push(msg.sender);
         }
         else if (choice == 1){
             proposal_history[counter].reject++;
+            voters.push(msg.sender);
         }
         else if (choice == 2){
             proposal_history[counter].approve++;
+            voters.push(msg.sender);
         }
         
         uint256 totalVote = 
