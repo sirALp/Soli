@@ -7,7 +7,7 @@ pragma solidity ^0.8.19;
 */
 
 contract Task{
-    address immutable owner;
+    address owner;
     address[] private voters;  
     uint256 private counter;
 
@@ -44,9 +44,35 @@ contract Task{
         proposal_history[counter] = Proposal(_title,_description,0,0,0,_total_vote_to_end,false,true);
     }
 
+    function setOwner(address new_Owner) external onlyOwner{
+        owner = new_Owner;
+    }
 
 
+    function vote(uint8 choice) external {
+        require(proposal_history[counter].is_active , "Proposal is not active, You cannot vote!"); 
+        // if proposal is still active then we'd go inner if statements otherwise won't even continue
+        if (choice == 0 ){
+            proposal_history[counter].pass++;
+        }
+        else if (choice == 1){
+            proposal_history[counter].reject++;
+        }
+        else if (choice == 2){
+            proposal_history[counter].approve++;
+        }
+        
+        uint256 totalVote = 
+        proposal_history[counter].approve   +
+        proposal_history[counter].reject    +
+        proposal_history[counter].pass;
 
+        if (totalVote >= proposal_history[counter].total_vote_to_end){
+            proposal_history[counter].is_active = false;
+        }
+        
+        
+    }
 
 
 
